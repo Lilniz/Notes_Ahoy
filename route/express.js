@@ -1,7 +1,7 @@
-const todo_router = require('express').Router();
+const todo_router = require('express');
 const fs = require('fs');
 const path = require('path');
-const db_path = path.join(__dirname, "../db/db.json");
+const db_path = path.join(__dirname, "./db/db.json");
 
 function getNotesData() {
     return fs.promises
