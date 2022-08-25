@@ -1,18 +1,18 @@
 const PORT = process.env.PORT || 3003;
 const fs = require('fs');
 const path = require('path');
-
 const express = require('express');
 const app = express();
+const notes = require('./db/db.json');
 
-const allNotes = require('./db/db.json');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('public'));
 
+
 app.get('/api/notes', (req, res) => {
-    res.json(allNotes.slice(1));
+    res.json(notes.slice(1));
 });
 
 app.get('/', (req, res) => {
@@ -26,6 +26,7 @@ app.get('/notes', (req, res) => {
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
 });
+
 
 function createNewNote(body, notesArray) {
     const newNote = body;
@@ -47,9 +48,10 @@ function createNewNote(body, notesArray) {
 }
 
 app.post('/api/notes', (req, res) => {
-    const newNote = createNewNote(req.body, allNotes);
+    const newNote = createNewNote(req.body, notes);
     res.json(newNote);
 });
+
 
 function deleteNote(id, notesArray) {
     for (let i = 0; i < notesArray.length; i++) {
@@ -68,10 +70,10 @@ function deleteNote(id, notesArray) {
 }
 
 app.delete('/api/notes/:id', (req, res) => {
-    deleteNote(req.params.id, allNotes);
+    deleteNote(req.params.id, notes);
     res.json(true);
 });
 
 app.listen(PORT, () => {
-    console.log(`API server now on port ${PORT}!`);
+    console.log(`Listening on port ${PORT}!`);
 });
