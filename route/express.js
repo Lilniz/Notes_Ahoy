@@ -1,7 +1,7 @@
-const todo_router = require('express');
-const fs = require('fs');
+const noteRouter = require('express').Router();
+const homeRouter = require('express').Router();
 const path = require('path');
-const db_path = path.join(__dirname, "./db/db.json");
+const db_path = path.join(__dirname, "../db/db.json");
 
 function getNotesData() {
     return fs.promises
@@ -10,7 +10,7 @@ function getNotesData() {
 }
 
 // Get All Notes
-todo_router.get("/api/notes", (req, res) => {
+noteRouter.get("/api/notes", (req, res) => {
     getNotesData()
         .then((notes_data) => {
             res.json(notes_data)
@@ -18,7 +18,7 @@ todo_router.get("/api/notes", (req, res) => {
 })
 
 // Give all Notes
-todo_router.post("/api/notes", (req, res) => {
+noteRouter.post("/api/notes", (req, res) => {
     getNotesData()
         .then((notes_data) => {
             const new_note = req.body;
@@ -35,7 +35,7 @@ todo_router.post("/api/notes", (req, res) => {
 })
 
 // Delete Request (URL-placeholder)
-todo_router.delete("/api/notes:id", (req, res) => {
+noteRouter.delete("/api/notes:id", (req, res) => {
     getNotesData().then((notes) => {
         const id = req.body.id;
         const obj = notes.find((note) => note.id === id);
@@ -50,6 +50,14 @@ todo_router.delete("/api/notes:id", (req, res) => {
                     res.json(notes);
                 }).catch((err) => console.log(err))
     }) 
+});
+
+homeRouter.get("/notes", (req, res) {
+    res.sendFile(path.join(__dirname, "../public/notes.html"))
+});
+
+homeRouter.get("*", (req, res) {
+    res.sendFile(path.join(__dirname, "../public/index.html"))
 })
 
 module.exports = todo_router;
